@@ -1,0 +1,1 @@
+fetch -> decode -> allocate -> rename -> 
