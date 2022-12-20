@@ -50,19 +50,19 @@ module rob #(
     rob_idx_t retire;
     rob_idx_t dispatch;
     rob_idx_t rename;
-  } rob_head_t;
+  } head_t;
 
-  rob_head_t head;
-  rob_head_t head_next;
+  head_t head;
+  head_t head_next;
 
   typedef struct packed {
     bool retire;
     bool dispatch;
     bool rename;
-  } rob_empty_t;
+  } empty_t;
 
-  rob_empty_t empty;
-  rob_empty_t empty_next;
+  empty_t empty;
+  empty_t empty_next;
 
   rob_idx_t exc_count;
 

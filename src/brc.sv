@@ -23,8 +23,8 @@ module brc(
         BRC_BNE:  taken = (sops[0] != sops[1]);
         BRC_BLT:  taken = (sops[0] <  sops[1]);
         BRC_BGE:  taken = (sops[0] >= sops[1]);
-        BRC_BLTU: taken = (ops[0] < ops[1]);
-        BRC_BGEU: taken = (ops[0] >= ops[1]);
+        BRC_BLTU: taken = ( ops[0] <   ops[1]);
+        BRC_BGEU: taken = ( ops[0] >=  ops[1]);
         default:  taken = FALSE;
       endcase
     end

@@ -23,6 +23,8 @@ module rs #(
     phy_reg_t       dst;
     bool      [1:0] ready;
     rob_idx_t       rob_idx;
+    lq_idx_t        lq_idx;
+    sq_idx_t        sq_idx;
   } entry_t;
 
   entry_t [SIZE-1:0] data;

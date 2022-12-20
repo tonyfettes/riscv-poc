@@ -6,7 +6,7 @@
 interface dispatch #(
   WIDTH = 3
 );
-  bool      [WIDTH-1:0] avail;
+  bool      [WIDTH-1:0] rs_avail;
   rs_idx_t  [WIDTH-1:0] rs_idx;
   bool      [WIDTH-1:0] valid;
   opt_t     [WIDTH-1:0] opt;
@@ -18,7 +18,10 @@ interface dispatch #(
   bool      [WIDTH-1:0] [1:0] ready;
   phy_reg_t [WIDTH-1:0] dst;
   rob_idx_t [WIDTH-1:0] rob_idx;
-  lsq_idx_t [WIDTH-1:0] lsq_idx;
+  bool      [WIDTH-1:0] sq_avail;
+  sq_idx_t  [WIDTH-1:0] sq_idx;
+  bool      [WIDTH-1:0] lq_avail;
+  lq_idx_t  [WIDTH-1:0] lq_idx;
 
   modport rob(
     input avail,
@@ -41,7 +44,7 @@ interface dispatch #(
   );
 
   modport rs(
-    output avail,
+    output rs_avail,
     output rs_idx,
     input valid,
     input opt,
@@ -53,13 +56,20 @@ interface dispatch #(
     input ready,
     input dst,
     input rob_idx,
-    input lsq_idx
+    input lq_idx,
+    input sq_idx,
   );
 
-  modport lsq(
-    input avail,
-    input valid,
-    output lsq_idx
+  modport lq(
+    output lq_avail,
+    output lq_idx,
+    input valid
+  );
+
+  modport sq(
+    output sq_avail,
+    output sq_idx,
+    input valid
   );
 endinterface
 

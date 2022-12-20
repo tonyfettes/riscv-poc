@@ -20,11 +20,13 @@ typedef logic [`ROB_IDX_LEN-1:0] rob_idx_t;
 `define RS_IDX_LEN `IDX_LEN(`RS_SIZE)
 typedef logic [`RS_IDX_LEN-1:0] rs_idx_t;
 
-`define RF_SIZE `ROB_SIZE + 32
-`define RF_IDX_LEN `IDX_LEN(`RF_SIZE)
+`define PRF_SIZE `ROB_SIZE + 32
+`define PRF_IDX_LEN `IDX_LEN(`PRF_SIZE)
 typedef logic [`RF_IDX_LEN-1:0] phy_reg_t;
 
-typedef logic [`IDX_LEN(32)-1:0] arc_reg_t;
+`define ARF_SIZE 32
+`define ARF_IDX_LEN `IDX_LEN(`ARF_SIZE)
+typedef logic [`ARF_IDX_LEN-1:0] arc_reg_t;
 
 `define LQ_SIZE 8
 `define SQ_SIZE 8
@@ -37,11 +39,24 @@ typedef struct packed {
   sq_idx_t sq;
 } lsq_idx_t;
 
+typedef enum logic {
+  MEM_LOAD  = 1'b0,
+  MEM_STORE = 1'b1
+} mem_typ_t;
+
+typedef logic [3:0]  mem_tag_t;
+typedef logic [63:0] mem_blk_t;
+
+typedef enum logic [1:0] {
+  MEM_CMD_NONE  = 2'b00,
+  MEM_CMD_LOAD  = 2'b01,
+  MEM_CMD_STORE = 2'b10
+} mem_cmd_t;
+
+typedef logic [28:0] mem_idx_t;
+
 typedef struct packed {
-  enum logic {
-    MEM_LOAD = 1'b0,
-    MEM_STORE = 1'b1
-  } ty;
+  mem_typ_t typ;
   union packed {
     enum logic [2:0] {
       MEM_LB  = 3'b000,

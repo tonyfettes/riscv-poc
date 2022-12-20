@@ -6,7 +6,12 @@
 
 typedef logic [`XLEN-1:0] xlen_t;
 typedef xlen_t pc_t;
+typedef xlen_t addr_t;
 typedef logic signed [`XLEN-1:0] slen_t;
+
+typedef logic [7:0]  byte_t;
+typedef logic [15:0] half_t;
+typedef logic [31:0] word_t;
 
 `define ARC_REG_SIZE 32
 

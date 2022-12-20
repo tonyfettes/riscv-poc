@@ -35,11 +35,11 @@ interface retire #(
     input phy_dst_old
   );
 
-  modport lsq(
+  modport sq(
+    output avail,
     input valid,
     input opt,
-    input fun,
-    output admit
+    input fun
   );
 endinterface
 

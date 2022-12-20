@@ -1,0 +1,3 @@
+SIM = iverilog
+SIM_FLAGS_MACRO = $(foreach M,MACRO,-D$(M))
+SIM_FLAGS = -g2012 -I$(INC_DIR) $(SIM_FLAGS_MACRO)

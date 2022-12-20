@@ -6,17 +6,20 @@
 interface fetch #(
   parameter WIDTH = 3
 );
-  pc_t   [WIDTH-1:0] pc;
+  bool   enable;
+  addr_t pc;
   xlen_t [WIDTH-1:0] data;
   bool   [WIDTH-1:0] valid;
 
   modport is(
+    input enable,
     input pc,
     output data,
     output valid
   );
 
   modport fc(
+    output enable,
     output pc,
     input data,
     input valid
