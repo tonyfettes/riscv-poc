@@ -12,7 +12,7 @@ interface memory;
   mem_tag_t ans_tag;
 
   modport dev(
-    output qry,
+    output qry_cmd,
     output qry_blk,
     output qry_idx,
     input  ack,
@@ -21,7 +21,7 @@ interface memory;
   );
 
   modport bus(
-    input  qry,
+    input  qry_cmd,
     input  qry_blk,
     input  qry_idx,
     output ack,

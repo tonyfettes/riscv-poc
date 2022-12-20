@@ -22,7 +22,7 @@ typedef logic [`RS_IDX_LEN-1:0] rs_idx_t;
 
 `define PRF_SIZE `ROB_SIZE + 32
 `define PRF_IDX_LEN `IDX_LEN(`PRF_SIZE)
-typedef logic [`RF_IDX_LEN-1:0] phy_reg_t;
+typedef logic [`PRF_IDX_LEN-1:0] phy_reg_t;
 
 `define ARF_SIZE 32
 `define ARF_IDX_LEN `IDX_LEN(`ARF_SIZE)
@@ -74,23 +74,23 @@ typedef struct packed {
 } mem_fun_t;
 
 typedef enum logic [3:0] {
-	ALU_ADD  = 4'h0,
-	ALU_SUB  = 4'h1,
-	ALU_SLT  = 4'h2,
-	ALU_SLTU = 4'h3,
-	ALU_AND  = 4'h4,
-	ALU_OR   = 4'h5,
-	ALU_XOR  = 4'h6,
-	ALU_SLL  = 4'h7,
-	ALU_SRL  = 4'h8,
-	ALU_SRA  = 4'h9
+  ALU_ADD  = 4'h0,
+  ALU_SUB  = 4'h1,
+  ALU_SLT  = 4'h2,
+  ALU_SLTU = 4'h3,
+  ALU_AND  = 4'h4,
+  ALU_OR   = 4'h5,
+  ALU_XOR  = 4'h6,
+  ALU_SLL  = 4'h7,
+  ALU_SRL  = 4'h8,
+  ALU_SRA  = 4'h9
 } alu_fun_t;
 
 typedef enum logic [3:0] {
-	MUL_     = 4'h1,
-	MUL_H    = 4'h2,
-	MUL_HSU  = 4'h3,
-	MUL_HU   = 4'h4
+  MUL_     = 4'h1,
+  MUL_H    = 4'h2,
+  MUL_HSU  = 4'h3,
+  MUL_HU   = 4'h4
 } mul_fun_t;
 
 typedef struct packed {
@@ -117,7 +117,11 @@ typedef union packed {
 
 typedef union packed {
   pc_t brc;
-  lsq_idx_t mem;
+  struct packed {
+    lq_idx_t lq;
+    sq_idx_t sq;
+    logic [31:6] _;
+  } mem;
 } aux_t;
 
 typedef enum logic [2:0] {
@@ -134,22 +138,22 @@ typedef enum logic {
 typedef logic [19:0] imm_t;
 
 typedef enum logic [3:0] {
-	EXC_INST_ADDR_MISALIGN  = 4'h0,
-	EXC_INST_ACCESS_FAULT   = 4'h1,
-	EXC_ILLEGAL_INST        = 4'h2,
-	EXC_BREAKPOINT          = 4'h3,
-	EXC_LOAD_ADDR_MISALIGN  = 4'h4,
-	EXC_LOAD_ACCESS_FAULT   = 4'h5,
-	EXC_STORE_ADDR_MISALIGN = 4'h6,
-	EXC_STORE_ACCESS_FAULT  = 4'h7,
-	EXC_ECALL_U_MODE        = 4'h8,
-	EXC_ECALL_S_MODE        = 4'h9,
-	EXC_NO_ERROR            = 4'ha, //a reserved code that we modified for our purpose
-	EXC_ECALL_M_MODE        = 4'hb,
-	EXC_INST_PAGE_FAULT     = 4'hc,
-	EXC_LOAD_PAGE_FAULT     = 4'hd,
-	EXC_HALTED_ON_WFI       = 4'he, //another reserved code that we used
-	EXC_STORE_PAGE_FAULT    = 4'hf
+  EXC_INST_ADDR_MISALIGN  = 4'h0,
+  EXC_INST_ACCESS_FAULT   = 4'h1,
+  EXC_ILLEGAL_INST        = 4'h2,
+  EXC_BREAKPOINT          = 4'h3,
+  EXC_LOAD_ADDR_MISALIGN  = 4'h4,
+  EXC_LOAD_ACCESS_FAULT   = 4'h5,
+  EXC_STORE_ADDR_MISALIGN = 4'h6,
+  EXC_STORE_ACCESS_FAULT  = 4'h7,
+  EXC_ECALL_U_MODE        = 4'h8,
+  EXC_ECALL_S_MODE        = 4'h9,
+  EXC_NO_ERROR            = 4'ha, //a reserved code that we modified for our purpose
+  EXC_ECALL_M_MODE        = 4'hb,
+  EXC_INST_PAGE_FAULT     = 4'hc,
+  EXC_LOAD_PAGE_FAULT     = 4'hd,
+  EXC_HALTED_ON_WFI       = 4'he, //another reserved code that we used
+  EXC_STORE_PAGE_FAULT    = 4'hf
 } exc_t;
 
 typedef struct packed {

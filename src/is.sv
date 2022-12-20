@@ -1,5 +1,7 @@
 `include "defs.svh"
 `include "fetch.svh"
+`include "memory.svh"
+`include "evict.svh"
 
 // Banked Instruction Cache
 module is #(
@@ -9,11 +11,10 @@ module is #(
   input clock, reset,
   fetch.is fetch,
   memory.dev memory,
-  evict.cs evict,
+  evict.cs evict
 );
 
   localparam BANK_SIZE = SIZE / BANK;
-  assert fetch.WIDTH <= BANK * 2;
 
   // +-----+-----+-----+-----+-----+
   // | TAG | SET | BNK | BLK | OFF |
@@ -35,8 +36,7 @@ module is #(
     mem_blk_t blk;
   } entry_t;
 
-  entry_t [BANK_SIZE-1:0] data      [1:0];
-  entry_t [BANK_SIZE-1:0] data_next [1:0];
+  entry_t [1:0] [BANK_SIZE-1:0] data, data_next;
 
   typedef struct packed {
     bool      valid;
@@ -65,30 +65,36 @@ module is #(
     mshr_next = mshr;
 
     for (int i = 0; i < fetch.WIDTH; i++) begin
-      {tag[i], set[i], bnk[i], blk[i], off[i]} = pc + i * 4;
+      {tag[i], set[i], bnk[i], blk[i], off[i]} = fetch.pc + i * 4;
     end
 
     for (int i = 0; i < BANK; i++) begin
-      {qry_tag[bnk[0] + i], qry_set[bnk[0] + i], _} =
+      {qry_tag[bnk[0] + i], qry_set[bnk[0] + i], qry_bnk[bnk[0] + i]} =
         {tag[0], set[0], bnk[0]} + i;
     end
 
-    memory = '0;
+    for (int i = 0; i < BANK; i++) begin
+      ans_valid[i] = FALSE;
+      ans[i] = '0;
+    end
+    memory.qry_cmd = MEM_CMD_NONE;
+    memory.qry_blk = '0;
+    memory.qry_idx = '0;
     for (int i = 0; i < BANK; i++) begin
       if (
         data[i][qry_set[i]].valid &&
         data[i][qry_set[i]].tag == qry_tag[i]
       ) begin
         ans_valid[i] = TRUE;
-        ans[i] = data[i][qry_set[i]].blk
-      end else if (!(
+        ans[i] = data[i][qry_set[i]].blk;
+      end else if (memory.qry_cmd == MEM_CMD_NONE && !(
         mshr[i].valid &&
         mshr[i].set == qry_set[i] &&
         mshr[i].tag == qry_tag[i]
       )) begin
         memory.qry_cmd = MEM_CMD_LOAD;
         memory.qry_blk = '0;
-        memory.qry_idx = {qry_tag[i], qry_set[i], bnk_t'(i)};
+        memory.qry_idx = {qry_tag[i], qry_set[i], qry_bnk[i]};
         if (memory.ack) begin
           mshr_next[i].valid = TRUE;
           mshr_next[i].tag = qry_tag[i];
@@ -99,8 +105,8 @@ module is #(
     end
 
     for (int i = 0; i < fetch.WIDTH; i++) begin
-      fetch.valid[i] = bnk_valid[bnk[i]];
-      fetch.data[i] = bnk_data[bnk[i]][blk[i]];
+      fetch.valid[i] = ans_valid[bnk[i]];
+      fetch.data[i] = ans[bnk[i]][blk[i]];
     end
 
     for (int i = 0; i < BANK; i++) begin
