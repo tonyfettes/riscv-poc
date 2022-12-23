@@ -2,6 +2,7 @@
 `define MEMORY_SVH
 
 interface memory;
+  localparam DEPTH = 15;
   mem_cmd_t qry_cmd;
   mem_blk_t qry_blk;
   mem_idx_t qry_idx;
