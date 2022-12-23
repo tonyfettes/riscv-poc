@@ -64,9 +64,18 @@ module ds #(
   set_t load_set;
 
   always_comb begin
+    evict.valid = FALSE;
+    evict.idx = 0;
+    evict.blk = 0;
+
     memory.qry_cmd = MEM_CMD_NONE;
     memory.qry_blk = 0;
     memory.qry_idx = 0;
+
+    load.hit = FALSE;
+    load.hit_blk = 0;
+    load.ack = FALSE;
+    load.ack_head = 0;
     if (load.qry) begin
       {load_tag, load_set} = load.qry_mem_idx;
       for (int j = 0; j < WAY; j++) begin
@@ -86,6 +95,7 @@ module ds #(
             end else begin
               load.ack_head = load.qry_lq_idx;
             end
+	    mshr_next[j].lq_valid = TRUE;
             mshr_next[j].lq_idx = load.qry_lq_idx;
           end
         end

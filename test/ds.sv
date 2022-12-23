@@ -80,15 +80,17 @@ module ds_test;
 
     @(negedge clock);
     memory.ack = 1;
-    load.qry = FALSE;
-    load.qry_mem_idx = 0;
-    load.qry_lq_idx = 0;
 
+    @(posedge clock);
     @(posedge clock);
     assert (load.hit == FALSE);
     assert (load.ack == TRUE);
-    assert (load.ack_head == 3);
+    assert (load.ack_head == 3) else $display("load.ack_head: %h", load.ack_head);
     assert (load.ans == FALSE);
+    `SD;
+    load.qry = FALSE;
+    load.qry_mem_idx = 0;
+    load.qry_lq_idx = 0;
 
     @(negedge clock);
     memory.ack = 0;
@@ -99,7 +101,7 @@ module ds_test;
 
     @(posedge clock);
     assert (load.ans == TRUE);
-    assert (load.ans_head == 0);
+    assert (load.ans_head == 3);
     assert (load.ans_blk == 64'hdeadbeefcc00ffee);
 
     @(negedge clock);
