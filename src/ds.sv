@@ -137,7 +137,8 @@ module ds #(
     load.ans = 0;
     load.ans_head = 0;
     load.ans_blk = 0;
-    if (mshr[memory.ans_tag].valid) begin
+    if (memory.ans_tag != 0 && mshr[memory.ans_tag].valid) begin
+      mshr_next[memory.ans_tag] = 0;
       load.ans = mshr[memory.ans_tag].lq_valid;
       load.ans_head = mshr[memory.ans_tag].lq_idx;
       load.ans_blk = memory.ans_blk;
