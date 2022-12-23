@@ -75,11 +75,11 @@ module is #(
 
     for (int i = 0; i < BANK; i++) begin
       ans_valid[i] = FALSE;
-      ans[i] = '0;
+      ans[i] = 0;
     end
     memory.qry_cmd = MEM_CMD_NONE;
-    memory.qry_blk = '0;
-    memory.qry_idx = '0;
+    memory.qry_blk = 0;
+    memory.qry_idx = 0;
     for (int i = 0; i < BANK; i++) begin
       if (
         data[i][qry_set[i]].valid &&
@@ -93,7 +93,7 @@ module is #(
         mshr[i].tag == qry_tag[i]
       )) begin
         memory.qry_cmd = MEM_CMD_LOAD;
-        memory.qry_blk = '0;
+        memory.qry_blk = 0;
         memory.qry_idx = {qry_tag[i], qry_set[i], qry_bnk[i]};
         if (memory.ack) begin
           mshr_next[i].valid = TRUE;
@@ -115,7 +115,7 @@ module is #(
           if (data[i][mshr[i].set].tag != mshr[i].mem_tag) begin
             evict.valid = TRUE;
             evict.idx = {mshr[i].tag, mshr[i].set, bnk_t'(i)};
-            evict.blk = data_next[i][mshr[i].set].blk;
+            evict.blk = data[i][mshr[i].set].blk;
             data_next[i][mshr[i].set].tag = mshr[i].tag;
             data_next[i][mshr[i].set].blk = memory.ans_blk;
           end else begin
