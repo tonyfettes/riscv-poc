@@ -10,10 +10,10 @@ $(SIM_INT)/$(SIM_EXE): $(SIM_SRC) | $(SIM_INT)
 	$(SIM) $(SIM_FLAGS) $^ -o $@
 
 $(SIM_TGT): $(SIM_INT)/$(SIM_EXE)
-	ln -sf $(SIM_EXE).d/$(SIM_EXE) $@
+	ln -sf $(shell realpath --relative-to $(dir $(abspath $@)) $(dir $(abspath $<)))/$(notdir $<) $@
 
 $(SIM_INT):
 	mkdir -p $@
 
 $(SIM_RUN): $(SIM_INT)/$(SIM_EXE)
-	cd $(SIM_INT) && ./$(SIM_EXE)
+	cd $(dir $<) && ./$(notdir $<)
