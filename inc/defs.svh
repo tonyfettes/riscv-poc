@@ -53,6 +53,7 @@ typedef enum logic [1:0] {
   MEM_CMD_STORE = 2'b10
 } mem_cmd_t;
 
+`define MEM_IDX_LEN 28
 typedef logic [28:0] mem_idx_t;
 
 typedef struct packed {

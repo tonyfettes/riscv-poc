@@ -1,4 +1,7 @@
 `include "defs.svh"
+`include "memory.svh"
+`include "evict.svh"
+`include "load.svh"
 
 module ds #(
   parameter SIZE = 8,
@@ -9,11 +12,9 @@ module ds #(
   evict.cs evict,
   load.ds load
 );
-  localparam OFF_LEN = 2;
-  typedef logic [OFF_LEN-1:0] off_t;
   localparam SET_LEN = `IDX_LEN(SIZE); 
   typedef logic [SET_LEN-1:0] set_t;
-  localparam TAG_LEN = `XLEN - OFF_LEN - SET_LEN;
+  localparam TAG_LEN = `MEM_IDX_LEN - SET_LEN;
   typedef logic [TAG_LEN-1:0] tag_t;
 
   localparam WAY_LEN = `IDX_LEN(WAY);
@@ -61,14 +62,13 @@ module ds #(
 
   tag_t load_tag;
   set_t load_set;
-  off_t load_off;
 
   always_comb begin
     memory.qry_cmd = MEM_CMD_NONE;
     memory.qry_blk = 0;
     memory.qry_idx = 0;
     if (load.qry) begin
-      {load_tag, load_set, load_off} = load.addr;
+      {load_tag, load_set} = load.qry_mem_idx;
       for (int j = 0; j < WAY; j++) begin
         if (data[load_set][j].tag == load_tag) begin
           load.hit = TRUE;
@@ -134,7 +134,7 @@ module ds #(
       end
     end
 
-    load.ans = 0;
+    load.ans = FALSE;
     load.ans_head = 0;
     load.ans_blk = 0;
     if (memory.ans_tag != 0 && mshr[memory.ans_tag].valid) begin

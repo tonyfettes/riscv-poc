@@ -1,4 +1,4 @@
-`include "fetch.svh"
+`include "defs.svh"
 
 module ds_test;
   logic clock;
@@ -34,7 +34,7 @@ module ds_test;
     load.qry_lq_idx = 0;
 
     @(negedge clock);
-    reset = FASLE;
+    reset = FALSE;
 
     @(posedge clock);
     @(posedge clock);
